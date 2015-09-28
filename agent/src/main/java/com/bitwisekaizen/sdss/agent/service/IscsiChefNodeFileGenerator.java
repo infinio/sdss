@@ -23,17 +23,32 @@ public class IscsiChefNodeFileGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(IscsiChefNodeFileGenerator.class);
 
     /**
-     * Generate the chef solo node json file for creating/deleting the specified targets.
+     * Generate the chef solo node json file for creating the specified targets.
      *
-     * @param iscsiTargets list of targets to create/delete.
+     * @param iscsiTargets list of targets to create.
      * @return node json file.
      */
-    public File generateFile(List<AccessibleIscsiTarget> iscsiTargets) {
+    public File generateCreateFile(List<AccessibleIscsiTarget> iscsiTargets) {
+        return this.generateFile(iscsiTargets, "node_create.mustache");
+    }
+
+    /**
+     * Generate the chef solo node json file for deleting the specified targets.
+     *
+     * @param iscsiTargets list of targets to deleting.
+     * @return node json file.
+     */
+    public File generateDeleteFile(List<AccessibleIscsiTarget> iscsiTargets) {
+        return this.generateFile(iscsiTargets, "node_delete.mustache");
+    }
+
+
+    private File generateFile(List<AccessibleIscsiTarget> iscsiTargets, String mustacheTemplate) {
         Map<String, Object> scopes = new HashMap<>();
         scopes.put("decoratedIscsiTargets", convert(iscsiTargets));
 
         MustacheFactory mustacheFactory = new DefaultMustacheFactory();
-        Mustache mustache = mustacheFactory.compile("node.mustache");
+        Mustache mustache = mustacheFactory.compile(mustacheTemplate);
 
         try {
             File outputFile = getOutputFile();

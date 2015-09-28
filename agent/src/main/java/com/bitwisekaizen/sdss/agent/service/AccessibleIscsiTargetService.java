@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,10 +51,8 @@ public class AccessibleIscsiTargetService {
         }
 
         IscsiTargetEntity newTarget = convertToPersistenceEntity(iscsiTarget);
-        List<IscsiTargetEntity> targetsToUpdate = newArrayList(accessibleIscsiTargetRepository.findAll());
-        targetsToUpdate.add(newTarget);
 
-        lioBackedStorageService.updateTargets(convertToDto(targetsToUpdate));
+        lioBackedStorageService.createTargets(convertToDto(Arrays.asList(newTarget)));
         accessibleIscsiTargetRepository.save(newTarget);
 
         return convertToDto(newTarget);
@@ -62,7 +61,7 @@ public class AccessibleIscsiTargetService {
     /**
      * Delete the ISCSI target with the specified ID.
      *
-     * @param targetName UUID of the ISCSI target to delete
+     * @param targetName name of the target to delete
      * @throws IscsiTargetNotFoundException if target is not found
      */
     public void deleteAccessibleIscsiTarget(String targetName) {
@@ -71,17 +70,7 @@ public class AccessibleIscsiTargetService {
             throw new IscsiTargetNotFoundException(targetName);
         }
 
-        List<IscsiTargetEntity> entitiesToUpdate = newArrayList(accessibleIscsiTargetRepository.findAll());
-        Iterator<IscsiTargetEntity> iterator = entitiesToUpdate.iterator();
-        while (iterator.hasNext()) {
-            IscsiTargetEntity entity = iterator.next();
-            if (entity.getTargetName().equals(targetName)) {
-                iterator.remove();
-                break;
-            }
-        }
-
-        lioBackedStorageService.updateTargets(convertToDto(entitiesToUpdate));
+        lioBackedStorageService.deleteTargets(convertToDto(Arrays.asList(existingTarget)));
         accessibleIscsiTargetRepository.delete(targetName);
     }
 

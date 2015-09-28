@@ -61,10 +61,11 @@ public class AffinityBasedStorageAgentRetriever {
         }
 
         logger.info("List of healthy agent nodes");
+        StringBuilder stringBuilder = new StringBuilder();
         for (StorageAgent storageAgent : healthyStorageAgents) {
-            StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(storageAgent.getAgentNode()).append("\n");
         }
+        logger.info(stringBuilder.toString());
 
         throw new AgentNodeNotFoundException(affinityEntity.getAgentNode());
     }

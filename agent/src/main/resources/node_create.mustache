@@ -1,7 +1,7 @@
 {
    "infinio_iscsi":{
       "storage_base":"/storage",
-      "luns":[
+      "create_luns":[
         {{#decoratedIscsiTargets}}
            {
               "name":"{{value.iscsiTarget.targetName}}",

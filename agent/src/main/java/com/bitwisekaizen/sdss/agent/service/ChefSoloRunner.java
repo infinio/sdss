@@ -32,6 +32,7 @@ public class ChefSoloRunner {
         this.useSudo = useSudo;
         this.chefExecutable = chefExecutable;
         this.defaultArgs = defaultArgs;
+
         this.chefSoloTarArchiveUrl = chefSoloTarArchiveUrl;
 
         try {

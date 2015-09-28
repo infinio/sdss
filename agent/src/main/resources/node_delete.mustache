@@ -1,0 +1,20 @@
+{
+   "infinio_iscsi":{
+      "storage_base":"/storage",
+      "delete_luns":[
+        {{#decoratedIscsiTargets}}
+           {
+              "name":"{{value.iscsiTarget.targetName}}",
+              "mapped_iqns":[
+              {{#value.iscsiTarget.hostIscsiQualifiedNames}}
+                 "{{value}}"{{^last}},{{/last}}
+              {{/value.iscsiTarget.hostIscsiQualifiedNames}}
+              ]
+           }{{^last}},{{/last}}
+        {{/decoratedIscsiTargets}}
+      ]
+   },
+   "run_list":[
+      "recipe[infinio_iscsi]"
+   ]
+}

@@ -63,12 +63,10 @@ public class AccessibleIscsiTargetServiceTest {
         assertThat(targetCreated, notNullValue());
         assertThat(targetCreated.getIscsiTarget(), reflectionMatching(targetToCreate));
         ArgumentCaptor<List<AccessibleIscsiTarget>> argument = ArgumentCaptor.forClass(((Class) List.class));
-        verify(lioBackedStorageService).updateTargets(argument.capture());
+        verify(lioBackedStorageService).createTargets(argument.capture());
         List<AccessibleIscsiTarget> targetsToUpdate = argument.getValue();
-        assertThat(targetsToUpdate, hasSize(3));
+        assertThat(targetsToUpdate, hasSize(1));
         assertThat(targetsToUpdate, hasItem(reflectionMatching(targetCreated)));
-        assertThat(targetsToUpdate, hasItem(matching(existingTarget01)));
-        assertThat(targetsToUpdate, hasItem(matching(existingTarget02)));
         verify(accessibleIscsiTargetRepository).save(argThat(matching(targetCreated)));
     }
 
@@ -83,7 +81,7 @@ public class AccessibleIscsiTargetServiceTest {
         } catch (DuplicateTargetNameException e) {
         }
 
-        verify(lioBackedStorageService, never()).updateTargets(argThat(any(List.class)));
+        verify(lioBackedStorageService, never()).createTargets(argThat(any(List.class)));
         verify(accessibleIscsiTargetRepository, never()).save(argThat(any(IscsiTargetEntity.class)));
     }
 
@@ -100,11 +98,10 @@ public class AccessibleIscsiTargetServiceTest {
         accessibleIscsiTargetService.deleteAccessibleIscsiTarget(targetToDelete.getTargetName());
 
         ArgumentCaptor<List<AccessibleIscsiTarget>> argument = ArgumentCaptor.forClass(((Class) List.class));
-        verify(lioBackedStorageService).updateTargets(argument.capture());
+        verify(lioBackedStorageService).deleteTargets(argument.capture());
         List<AccessibleIscsiTarget> targetsToUpdate = argument.getValue();
-        assertThat(targetsToUpdate, hasSize(2));
-        assertThat(targetsToUpdate, hasItem(matching(targetToKeep01)));
-        assertThat(targetsToUpdate, hasItem(matching(targetToKeep02)));
+        assertThat(targetsToUpdate, hasSize(1));
+        assertThat(targetsToUpdate, hasItem(matching(targetToDelete)));
         verify(accessibleIscsiTargetRepository).delete(targetToDelete.getTargetName());
     }
 
@@ -181,6 +178,4 @@ public class AccessibleIscsiTargetServiceTest {
             }
         };
     }
-
-
 }

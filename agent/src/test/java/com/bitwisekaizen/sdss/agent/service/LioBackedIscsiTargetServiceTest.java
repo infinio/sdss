@@ -39,18 +39,33 @@ public class LioBackedIscsiTargetServiceTest {
         lioBackedIscsiTargetService = new LioBackedIscsiTargetService(nodeFileGenerator, chefSoloRunner);
     }
 
+
     @Test
-    public void canUpdateTargets() throws Exception {
+    public void canCreateTargets() throws Exception {
         List<AccessibleIscsiTarget> iscsiTargets = asList(anAccessibleIscsiTarget().build(),
                 anAccessibleIscsiTarget().build(), anAccessibleIscsiTarget().build());
         File nodeFile = getTempFile();
 
-        when(nodeFileGenerator.generateFile(iscsiTargets)).thenReturn(nodeFile);
+        when(nodeFileGenerator.generateCreateFile(iscsiTargets)).thenReturn(nodeFile);
         when(chefSoloRunner.runUsingNodeFile(nodeFile)).thenReturn(aSuccessfulResultWithOutput(""));
 
-        lioBackedIscsiTargetService.updateTargets(iscsiTargets);
+        lioBackedIscsiTargetService.createTargets(iscsiTargets);
         verify(chefSoloRunner).runUsingNodeFile(nodeFile);
     }
+
+    @Test
+    public void canDeleteTargets() throws Exception {
+        List<AccessibleIscsiTarget> iscsiTargets = asList(anAccessibleIscsiTarget().build(),
+                anAccessibleIscsiTarget().build(), anAccessibleIscsiTarget().build());
+        File nodeFile = getTempFile();
+
+        when(nodeFileGenerator.generateDeleteFile(iscsiTargets)).thenReturn(nodeFile);
+        when(chefSoloRunner.runUsingNodeFile(nodeFile)).thenReturn(aSuccessfulResultWithOutput(""));
+
+        lioBackedIscsiTargetService.deleteTargets(iscsiTargets);
+        verify(chefSoloRunner).runUsingNodeFile(nodeFile);
+    }
+
 
     @Test
     public void throwExceptionIfUnableToRunChefSolo() throws Exception {
@@ -58,11 +73,11 @@ public class LioBackedIscsiTargetServiceTest {
                 anAccessibleIscsiTarget().build(), anAccessibleIscsiTarget().build());
         File nodeFile = getTempFile();
 
-        when(nodeFileGenerator.generateFile(iscsiTargets)).thenReturn(nodeFile);
+        when(nodeFileGenerator.generateCreateFile(iscsiTargets)).thenReturn(nodeFile);
         when(chefSoloRunner.runUsingNodeFile(nodeFile)).thenReturn(aFailedResultWithOutput(("")));
 
         try {
-            lioBackedIscsiTargetService.updateTargets(iscsiTargets);
+            lioBackedIscsiTargetService.createTargets(iscsiTargets);
             fail("Expected UnhandledException.");
         } catch (UnhandledException e) {
             Assert.assertThat(e.getMessage(), containsString("Chef ran failure"));

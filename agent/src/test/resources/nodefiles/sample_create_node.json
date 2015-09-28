@@ -1,0 +1,31 @@
+{
+  "infinio_iscsi":{
+    "storage_base":"/storage",
+    "create_luns":[
+      {
+        "name":"target01",
+        "size":"10MB",
+        "mapped_iqns":[
+          "iqn01",
+          "iqn02"
+        ]
+      },
+      {
+        "name":"target02",
+        "size":"20MB",
+        "mapped_iqns":[
+          "iqn03"
+        ]
+      },
+      {
+        "name":"target03",
+        "size":"30MB",
+        "mapped_iqns":[
+        ]
+      }
+    ]
+  },
+  "run_list":[
+    "recipe[infinio_iscsi]"
+  ]
+}

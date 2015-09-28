@@ -34,6 +34,8 @@ public class StorageAgentFactory {
 
     @PostConstruct
     public void start() {
+        // for debugging see:
+        // http://sdss-master.infinio.com:8500/v1/health/service/sdss-agent
         Consul consul = Consul.newClient(consulHost, Consul.DEFAULT_HTTP_PORT);
         final HealthClient healthClient = consul.healthClient();
 

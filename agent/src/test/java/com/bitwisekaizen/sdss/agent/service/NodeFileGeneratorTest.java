@@ -28,7 +28,7 @@ public class NodeFileGeneratorTest {
     }
 
     @Test
-    public void canGenerateFile() throws Exception {
+    public void canGenerateFiles() throws Exception {
         AccessibleIscsiTarget target01 = anAccessibleIscsiTarget().withIscsiTarget(
                 anIscsiTarget().withTargetName("target01").withCapacityInMb(10).withIqns("iqn01", "iqn02")).build();
         AccessibleIscsiTarget target02 = anAccessibleIscsiTarget().withIscsiTarget(
@@ -36,15 +36,24 @@ public class NodeFileGeneratorTest {
         AccessibleIscsiTarget target03 = anAccessibleIscsiTarget().withIscsiTarget(
                 anIscsiTarget().withTargetName("target03").withCapacityInMb(30)).build();
 
-        File nodeFile = nodeFileGenerator.generateFile(asList(target01, target02, target03));
+        File createNodeFile = nodeFileGenerator.generateCreateFile(asList(target01, target02, target03));
+        File deleteNodeFile = nodeFileGenerator.generateDeleteFile(asList(target01, target02, target03));
 
-        String actualNodeFileText = readFileToString(nodeFile);
-        assertThat(isValidJson(actualNodeFileText), is(true));
-        assertThat(getJsonNode(actualNodeFileText), equalTo(getJsonNode(expectedNodeFile())));
+        String actualCreateNodeFileText = readFileToString(createNodeFile);
+        assertThat(isValidJson(actualCreateNodeFileText), is(true));
+        assertThat(getJsonNode(actualCreateNodeFileText), equalTo(getJsonNode(expectedCreateNodeFile())));
+
+        String actualDeleteNodeFileText = readFileToString(deleteNodeFile);
+        assertThat(isValidJson(actualDeleteNodeFileText), is(true));
+        assertThat(getJsonNode(actualDeleteNodeFileText), equalTo(getJsonNode(expectedDeleteNodeFile())));
     }
 
-    private String expectedNodeFile() throws IOException {
-        return IOUtils.toString(getClass().getClassLoader().getResourceAsStream("nodefiles/sample_node.json"));
+    private String expectedCreateNodeFile() throws IOException {
+        return IOUtils.toString(getClass().getClassLoader().getResourceAsStream("nodefiles/sample_create_node.json"));
+    }
+
+    private String expectedDeleteNodeFile() throws IOException {
+        return IOUtils.toString(getClass().getClassLoader().getResourceAsStream("nodefiles/sample_delete_node.json"));
     }
 
     public boolean isValidJson(String test) {
